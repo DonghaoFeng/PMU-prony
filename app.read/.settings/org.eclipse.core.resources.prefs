@@ -1,4 +1,4 @@
 eclipse.preferences.version=1
 encoding//cpp/Makefile=UTF-8
 encoding//cpp/MessageJNI.c=utf-8
-encoding//src/ReadTableJNI.java=UTF-8
+encoding//src/jni/ReadTableJNI.java=UTF-8
