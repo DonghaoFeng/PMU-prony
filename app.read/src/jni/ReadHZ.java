@@ -21,7 +21,7 @@ public class ReadHZ {
 			}
 		}).forEach(o -> System.out.println(o));
 		IMap map= client.getMap("device_pmu");
-		client.getMap("device_pmu").values().forEach(o->System.out.println(o));
+//		client.getMap("device_pmu").values().forEach(o->System.out.println(o));
 		System.out.println(System.currentTimeMillis() - time);
 		client.shutdown();
 		

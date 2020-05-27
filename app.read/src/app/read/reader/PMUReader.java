@@ -49,6 +49,7 @@ public class PMUReader {
 								WAMSDataRecord dataRecord = new WAMSDataRecord(wamsDataStr);
 								pmuMap.executeOnKey(dataRecord.getRecord_id(), new AddPMUProcessor(new WAMSData(index.getTime(), dataRecord)));	
 							});
+							System.out.println("New time:"+index.getTime());
 							timeSet.add(index.getTime());
 						} else {
 							System.err.println("data table error");

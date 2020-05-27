@@ -91,12 +91,11 @@ Java_jni_ReadTableJNI_readTable(JNIEnv *env, jclass jc, jstring sys_name, jstrin
 	}
 
 	CResult read_result;
-	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	ret = oodbapi.ReadTb(read_result, 1);
 	if (ret < 0) {
 		printf("ReadTb() Ê§°Ü!\n");
 	} else {
-//		printf("ReadTb() ³É¹¦!\n");
+//		printf("ReadTb() ³É¹¦,%s!\n",tb);
 	}
 //	printf((char *)(read_result.buffer));
 	int rec_num = read_result.rec_num;
