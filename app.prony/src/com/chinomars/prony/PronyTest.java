@@ -26,12 +26,12 @@ public class PronyTest {
 		}
 		double[] values = new double[point];
 		for (int k = 0; k < time.length; k++) {
-			values[k] = amlitude * Math.cos(2 * Math.PI * frequency * t[k] + phase) * Math.exp(t[k]* damping )+  Math.cos(2 * Math.PI * frequency * t[k] + phase*2) * Math.exp(t[k]* damping*2 );;
+			values[k] = amlitude * Math.cos(2 * Math.PI * frequency * t[k] + phase) * Math.exp(t[k]* damping )+  Math.cos(2 * Math.PI * frequency *2* t[k] + phase*2) * Math.exp(t[k]* damping*2 );;
 			
 		}
-		System.out.println(System.currentTimeMillis());
-		ArrayList<PronyParameter> list = Prony.getParameterList(values, T,2);
-		System.out.println(System.currentTimeMillis());
+		long startTime = System.currentTimeMillis();
+		ArrayList<PronyParameter> list = new Prony(values, T,40).getParameterList();
+		System.out.println(System.currentTimeMillis()-startTime);
 		PronyParameter p = list.get(0);
 		assertTrue(Math.abs(p.getAmlitude() - amlitude ) < error);
 		assertTrue(Math.abs(p.getDamping() - damping) < error);

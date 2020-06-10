@@ -1,24 +1,24 @@
 package app.read.collection;
 
 import app.read.bean.BaseJSONBean;
-import app.read.bean.WAMSDataRecord;
+import app.read.bean.Wams_his_dataRecord;
 
 public class WAMSData extends BaseJSONBean{
 	private String time;
-	private WAMSDataRecord record;
+	private Wams_his_dataRecord record;
 	public String getTime() {
 		return time;
 	}
 	public void setTime(String time) {
 		this.time = time;
 	}
-	public WAMSDataRecord getRecord() {
+	public Wams_his_dataRecord getRecord() {
 		return record;
 	}
-	public void setRecord(WAMSDataRecord record) {
+	public void setRecord(Wams_his_dataRecord record) {
 		this.record = record;
 	}
-	public WAMSData(String time, WAMSDataRecord record) {
+	public WAMSData(String time, Wams_his_dataRecord record) {
 		super();
 		this.time = time;
 		this.record = record;

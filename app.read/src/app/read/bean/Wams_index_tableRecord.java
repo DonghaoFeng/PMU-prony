@@ -1,13 +1,18 @@
 package app.read.bean;
 
-public class WAMSIndexRecord extends BaseJSONBean {
-
-	public WAMSIndexRecord() {
+public class Wams_index_tableRecord extends BaseJSONBean {
+	
+	public long keyid;
+	public String table_name;
+	public String time;
+	public int valid;
+	
+	public Wams_index_tableRecord() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
-	public WAMSIndexRecord(String indexStr) {
+	public Wams_index_tableRecord(String indexStr) {
 		String[] attributeStr = indexStr.split("\\|");
 		this.keyid = Long.valueOf(attributeStr[0]);
 		this.table_name = attributeStr[1];
@@ -15,10 +20,7 @@ public class WAMSIndexRecord extends BaseJSONBean {
 		this.valid = Integer.valueOf(attributeStr[3]);
 	}
 	
-	private long keyid;
-	private String table_name;
-	private String time;
-	private int valid;
+
 	public long getKeyid() {
 		return keyid;
 	}

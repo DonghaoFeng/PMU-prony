@@ -11,7 +11,6 @@ char* charset_convert(const char *from_charset, const char *to_charset,
 
 void switch_type(int type, char *value, string &str) {
 
-
 	switch (type) {
 	case OODB_CHAR:
 		strcpy(buff, value);
@@ -154,4 +153,169 @@ char* charset_convert(const char *from_charset, const char *to_charset,
 	return out_buf;
 
 }
+
+void fun(char *s)
+{
+	int i, j = 0;
+	for (i = 0; s[i] != '\0'; i++)
+	{
+		if (s[i] < '0' || s[i] > '9')
+		{
+			s[j++] = s[i];
+		}
+	}
+	s[j] = '\0';
+}
+
+JNIEXPORT jobject JNICALL
+Java_jni_ReadTableJNI_readTableN(JNIEnv *env, jclass jc, jstring sys_name, jstring bob_name, jstring db_name,jstring tb_name)
+{
+	COodbApiOp oodbapi;
+	char* sys = (char*)env->GetStringUTFChars(sys_name,0);
+	char* bob = (char*)env->GetStringUTFChars(bob_name,0);
+	char* db = (char*)env->GetStringUTFChars(db_name,0);
+	char* tb = (char*)env->GetStringUTFChars(tb_name,0);
+	int ret = oodbapi.OpenTb(sys, bob, db, tb);
+	if (ret < 0) {
+		printf("OpenTb() failed!\n");
+	} else {
+//		printf("OpenTb() 成功!\n");
+	}
+
+	CResult read_result;
+	ret = oodbapi.ReadTb(read_result, 1);
+	if (ret < 0) {
+		printf("ReadTb() failed!\n");
+	} else {
+//		printf("ReadTb() 成功,%s!\n",tb);
+	}
+//	printf((char *)(read_result.buffer));
+	int rec_num = read_result.rec_num;
+	int rec_len = read_result.rec_len;
+//	printf("rec_len %d|", rec_len);
+	vector < ATTRDESC > attr_desc;
+	ret = oodbapi.GetAttrDesc(attr_desc);
+	int attr_num = attr_desc.size();
+	char* attr_value =(char*) read_result.buffer;
+	char* attr_values = attr_value;
+
+	jclass list_jcs = env->FindClass("java/util/ArrayList");
+	if (list_jcs == NULL) {
+//		LOGI("ArrayList not find!");
+		return NULL;
+	}
+	jmethodID list_init = env->GetMethodID(list_jcs, "<init>", "()V");
+
+	jobject list_obj = env->NewObject(list_jcs, list_init, "");
+
+	jmethodID list_add = env->GetMethodID(list_jcs, "add",
+			"(Ljava/lang/Object;)Z");
+
+	tb[0] -=32;
+	fun(tb);
+	string str ;
+	str.append("app/read/bean/");
+	str.append(tb);
+	str.append("Record");
+	jclass index_cls = env->FindClass(str.c_str());
+	jmethodID index_init = env->GetMethodID(index_cls, "<init>",
+			"()V");
+
+	jfieldID fid;
+	for(int i =0; i< rec_num;i++)
+	{
+		jobject index_obj = env->NewObject(index_cls, index_init, "");
+		for(int k = 0; k<attr_num; k++)
+		{
+			attr_values= attr_value + attr_desc[k].offset;
+			const char * name = attr_desc[k].name.c_str();
+//			printf("%d|",attr_desc[k].type);
+			switch (attr_desc[k].type) {
+				case OODB_CHAR: {
+					fid=env->GetFieldID(index_cls,name,"Ljava/lang/String;");
+					jstring str = (jstring)(env)->NewStringUTF(attr_values);
+					env->SetObjectField(index_obj, fid, str);
+					break;
+				}
+				case OODB_TIME: {
+					//printf("%d: %s\t",i,ctime((time_t*)value));
+					fid=env->GetFieldID(index_cls,name,"Ljava/lang/String;");
+					char *timeBuf = ctime((time_t*) attr_values);
+					timeBuf[24] = '\0';
+					jstring str = (jstring)(env)->NewStringUTF(timeBuf);
+					env->SetObjectField(index_obj, fid, str);
+					break;
+				}
+				case OODB_FLOAT: {
+					fid=env->GetFieldID(index_cls,name,"F");
+					jfloat jf = (jfloat)(*(float*) attr_values);
+					env->SetFloatField(index_obj, fid, jf);
+					break;
+				}
+				case OODB_DOUBLE: {
+//				sprintf(buff, "%lf|", *(double*) value);
+					fid=env->GetFieldID(index_cls,name,"D");
+					jdouble jd = (jdouble)(*(double*)attr_values);
+					env->SetDoubleField(index_obj, fid, jd);
+					break;
+				}
+				case OODB_INT: {
+//				sprintf(buff, "%d|", *(int*) value);
+					fid=env->GetFieldID(index_cls,name,"I");
+					jint ji = (jint)(*(int*) attr_values);
+					env->SetIntField(index_obj, fid, ji);
+					break;
+				}
+				case OODB_SMALLINT:{
+//				sprintf(buff, "%d|", *(smallint*) value);
+					fid=env->GetFieldID(index_cls,name,"I");
+
+					jint ji = (jint)(*(smallint*) attr_values);
+					env->SetIntField(index_obj, fid, ji);
+					break;
+				}
+				case OODB_TINYINT:{
+//				sprintf(buff, "%d|", *(tinyint*) value);
+					fid=env->GetFieldID(index_cls,name,"I");
+
+					jint ji = (jint)(*(tinyint*) attr_values);
+					env->SetIntField(index_obj, fid, ji);
+					break;
+				}
+				case OODB_BIT:
+//				sprintf(buff, "%d|", *(bit*) value);
+				break;
+				case OODB_MASK:
+//				sprintf(buff, "%d|", *(mask*) value);
+				break;
+				case OODB_LONG: {
+//				sprintf(buff, "%d|", *(longint*) value);
+//					print(name);
+					fid=env->GetFieldID(index_cls,name,"J");
+
+					jlong jl = (jlong)(*(longint*) attr_values);
+					env->SetIntField(index_obj, fid, jl);
+//					//case OODB_UINT		:
+//					//printf("%d: %d\t",i,*(unsigned int*)value);
+					break;
+				}
+				case OODB_PAIR_LONG:
+				case OODB_MEASID: {
+					fid=env->GetFieldID(index_cls,name,"J");
+					PAIR_LONG *pair_long = (PAIR_LONG*) attr_values;
+					jlong l1 =(jlong)pair_long->first_long;
+					jlong l2= (jlong)pair_long->second_long;
+					env->SetIntField(index_obj, fid, l1+l2);
+					break;
+				}
+				default:
+				printf("unknow ");
+			}
+		}
+		attr_value+= rec_len;
+		env->CallBooleanMethod(list_obj, list_add, index_obj);
+	}
+	return list_obj;
+}
+
 

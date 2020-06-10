@@ -1,13 +1,11 @@
 package jni;
 
-import java.util.Comparator;
-
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
-import app.read.bean.WAMSDataRecord;
+import app.read.bean.Wams_his_dataRecord;
 import app.read.collection.WAMSData;
 
 public class HZBeanTest {
@@ -19,7 +17,7 @@ public class HZBeanTest {
 		long time = System.currentTimeMillis();
 		
 		IMap map= client.getMap("device_pmu");
-		client.getMap("device_pmu").set("1", new WAMSData("sdadasd", new WAMSDataRecord()));
+		client.getMap("device_pmu").set("1", new WAMSData("sdadasd", new Wams_his_dataRecord()));
 		System.out.println(client.getMap("device_pmu").get("1"));
 		System.out.println(System.currentTimeMillis() - time);
 		client.shutdown();

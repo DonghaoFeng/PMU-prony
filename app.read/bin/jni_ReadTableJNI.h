@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT jstring JNICALL Java_jni_ReadTableJNI_readTable
   (JNIEnv *, jclass, jstring, jstring, jstring, jstring);
 
+/*
+ * Class:     jni_ReadTableJNI
+ * Method:    readTableN
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL Java_jni_ReadTableJNI_readTableN
+  (JNIEnv *, jclass, jstring, jstring, jstring, jstring);
+
 #ifdef __cplusplus
 }
 #endif
