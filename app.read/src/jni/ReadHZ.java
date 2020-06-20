@@ -1,10 +1,16 @@
 package jni;
 
+import java.util.List;
+
+import com.chinomars.prony.Prony;
+import com.chinomars.prony.PronyParameter;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
+import app.preprocess.PreFilter;
+import app.preprocess.test.DrawMath;
 import app.read.collection.DataHelper;
 import app.read.collection.FixSizeLinkedList;
 
@@ -22,11 +28,25 @@ public class ReadHZ {
 //			}
 //		}).forEach(o -> System.out.println(o));
 		IMap<Object, Object> map = client.getMap("device_pmu");
-		FixSizeLinkedList list = (FixSizeLinkedList) client.getMap("device_pmu").get(4L);
+		FixSizeLinkedList list = (FixSizeLinkedList) client.getMap("device_pmu").get(2L);
 		long time = System.currentTimeMillis();
-		double[] yArray =new DataHelper(list).getData(120);
-//		DrawMath.add(yArray);
-//		DrawMath.draw();
+		double[] values =new DataHelper(list).getData(20);
+		
+//		DrawMath.add(values);
+		DrawMath.draw();
+		if (PreFilter.checkOscillation(values, 4)) {
+//			DrawMath.add(values);
+			long start = System.currentTimeMillis();
+			values = PreFilter.prefilter(values, 5);
+			DrawMath.add(values);
+//			DrawMath.draw();
+
+			Prony prony = new Prony(values, 0.02, 40);
+			
+//			prony.fit(8);
+			List<PronyParameter> pList = prony.getParameterList();
+			DrawMath.add(prony.getFitvalues());
+		}
 		System.out.println(System.currentTimeMillis() - time);
 		client.shutdown();
 		

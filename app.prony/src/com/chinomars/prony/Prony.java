@@ -52,10 +52,9 @@ public class Prony {
 		if (parameterList == null) {
 			fit();
 		}
-		List<PronyParameter> list = parameterList.stream().filter(p -> p.getDamping() > -5)
-				.collect(Collectors.toList());
-		PronyParameter maxP = list.get(0);
-		return list.stream().filter(p -> p.getAmlitude() / maxP.getAmlitude() > 0.1).collect(Collectors.toList());
+		PronyParameter maxP = parameterList.get(0);
+		
+		return parameterList.stream().filter(p -> p.getEnergy() / maxP.getEnergy() > 0.1).collect(Collectors.toList());
 	}
 
 	/**
@@ -178,7 +177,7 @@ public class Prony {
 			Complex uPole = new Complex(u.getRealEigenvalues()[i], u.getImagEigenvalues()[i]);
 			double f = uPole.log().getImaginary() / (2.0 * Math.PI * T);
 			if (f > 0) {
-				PronyParameter parameter = new PronyParameter();
+				PronyParameter parameter = new PronyParameter(this.values.length,this.T);
 				paramerterList.add(parameter);
 
 				Complex cPole = eqn.getX(i);
@@ -218,18 +217,17 @@ public class Prony {
 		this.T = T;
 	}
 
-	
-
 	private double[] getFitValues(int length) {
 		double[] values = new double[length];
 		parameterList.forEach(p -> {
 			for (int k = 0; k < length; k++) {
-				values[k] += p.getAmlitude() * Math.cos(2 * Math.PI * p.getFrequency() * T * k + p.getPhase())
-						* Math.exp(T * k * p.getDamping());
+				values[k] += p.getFitValue(k);
 			}
 		});
 		return values;
 	}
+	
+	
 
 	private void calSNR() {
 		double[] diff = new double[values.length];
@@ -252,7 +250,7 @@ public class Prony {
 
 	public void fit() {
 		fit(rank);
-		while (fitSNR < minSNR && rank <= 20) {
+		while (fitSNR < minSNR && rank <= 50) {
 			rank++;
 			fit(rank);
 		}
@@ -266,6 +264,9 @@ public class Prony {
 			fit(entry.getKey());
 			rank = entry.getKey();
 		}
+		parameterList.forEach(p->{
+			System.out.println(p);
+		});
 		
 	}
 
@@ -288,7 +289,7 @@ public class Prony {
 		parameterList.sort(new Comparator<PronyParameter>() {
 			@Override
 			public int compare(PronyParameter o1, PronyParameter o2) {
-				return -Double.valueOf(o1.getAmlitude()).compareTo(o2.getAmlitude());
+				return -new Double(o1.getEnergy()).compareTo(o2.getEnergy());
 			}
 		});
 
