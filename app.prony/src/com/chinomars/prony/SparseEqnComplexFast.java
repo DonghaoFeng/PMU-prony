@@ -17,9 +17,13 @@ import edu.emory.mathcs.csparsej.tdcomplex.DZcs_sqr;
 import edu.emory.mathcs.csparsej.tdcomplex.DZcs_usolve;
 import edu.emory.mathcs.csparsej.tdcomplex.DZcs_util;
 
+/**
+ * @author Donghao
+ *
+ */
 public class SparseEqnComplexFast {
-	private static final int CSJ_Order = 2;
-	private static final double CSJ_Tol = 1.0;
+	private static final int CSJ_ORDER = 2;
+	private static final double CSJ_TOL = 1.0;
 	private int length;
 	private boolean factored;
 	private DZcs aMatrix;
@@ -76,14 +80,14 @@ public class SparseEqnComplexFast {
 	public void factorization(final double tolerance) throws Exception  {
 		buildAMatrix();
 
-		this.symbolTable = DZcs_sqr.cs_sqr(CSJ_Order, this.aMatrix, false); /* ordering and symbolic analysis */
-		if (this.symbolTable == null)
+		this.symbolTable = DZcs_sqr.cs_sqr(CSJ_ORDER, this.aMatrix, false); /* ordering and symbolic analysis */
+		if (this.symbolTable == null) {
 			throw new Exception("Error in CSparseJ ordering and symbolic analysis");
-
-		this.numericTable = DZcs_lu.cs_lu(this.aMatrix, this.symbolTable, CSJ_Tol); /* numeric LU factorization */
-		if (this.numericTable == null)
+		}
+		this.numericTable = DZcs_lu.cs_lu(this.aMatrix, this.symbolTable, CSJ_TOL); /* numeric LU factorization */
+		if (this.numericTable == null) {
 			throw new Exception("Error in  CSparseJ numeric LU factorization");
-
+		}
 		this.factored = true;
 	}
 
@@ -105,9 +109,9 @@ public class SparseEqnComplexFast {
 				}
 			}
 		}
-		if (this.aMatrix.nzmax != m)
+		if (this.aMatrix.nzmax != m) {
 			System.err.println("A-matrix memory dynamically increased");
-
+		}
 		if (!DZcs_util.CS_CSC(this.aMatrix)) {
 			this.aMatrix = DZcs_compress.cs_compress(this.aMatrix);
 		}
@@ -123,14 +127,14 @@ public class SparseEqnComplexFast {
 	 * 
 	 */
 	public void solveEqn() throws Exception {
-		if (!this.factored)
+		if (!this.factored) {
 			this.factorization(1.0e-10);
-
+		}
 		int n = this.length;
 
-		if (!DZcs_util.CS_CSC(aMatrix))
+		if (!DZcs_util.CS_CSC(aMatrix)) {
 			throw new Exception("A-matrix is not compressed");
-
+		}
 		DZcsa b = new DZcsa(n);
 		for (int i = 0; i < n; i++) {
 			b.set(i, bx[i], by[i]);

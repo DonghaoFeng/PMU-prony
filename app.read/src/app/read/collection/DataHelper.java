@@ -4,6 +4,10 @@ import java.util.List;
 
 import app.read.bean.Wams_his_dataRecord;
 
+/**
+ * @author Donghao
+ *
+ */
 public class DataHelper {
 
 	private FixSizeLinkedList<WAMSData> list;

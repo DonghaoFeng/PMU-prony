@@ -1,5 +1,9 @@
 package app.read.bean;
 
+/**
+ * @author Donghao
+ *
+ */
 public class Wams_index_tableRecord extends BaseJSONBean {
 	
 	public long keyid;

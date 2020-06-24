@@ -2,19 +2,23 @@ package app.preprocess;
 
 import java.util.Scanner;
 
+/**
+ * @author Donghao
+ *
+ */
 public class Hermite {
 
 	public static double[] interpolate(double x[], double y[], double x0[]) {
-		int x_length = x.length;
-		int x0_length = x0.length;
-		double y0[] = new double[x0_length];
+		int xLength = x.length;
+		int x0Length = x0.length;
+		double y0[] = new double[x0Length];
 		int xIndex;
 		double[] d = pchipslopes(x, y);
 		int i;
 		int j;
-		for (i = 0; i < x0_length; i++) {
+		for (i = 0; i < x0Length; i++) {
 			xIndex = -1;
-			for (j = 0; j < x_length; j++) {
+			for (j = 0; j < xLength; j++) {
 				if (x0[i] - x[j] >= 0) {
 					xIndex = j;
 				}	
@@ -22,8 +26,8 @@ public class Hermite {
 			if (xIndex < 0) {
 				xIndex = 0;
 			}
-			if (xIndex >= x_length-1) {
-				xIndex = x_length - 2;
+			if (xIndex >= xLength-1) {
+				xIndex = xLength - 2;
 			}
 			
 			y0[i] = ((1 + 2 * (x0[i] - x[xIndex]) / (x[xIndex + 1] - x[xIndex])) * y[xIndex]
@@ -52,16 +56,16 @@ public class Hermite {
 		System.out.println("输入插值点个数：");
 		Scanner scan = new Scanner(System.in);
 		int n = scan.nextInt();
-		double X0[] = new double[n];
+		double x0[] = new double[n];
 		System.out.println("输入插值点横坐标：");
 		for (int i = 0; i < n; i++) {
-			X0[i] = scan.nextDouble();
+			x0[i] = scan.nextDouble();
 		}
 
-		double Y0[] = interpolate(x, y, X0);
+		double y0[] = interpolate(x, y, x0);
 		System.out.println("H插值法求解得:");
 		for (int i = 0; i < n; i++) {
-			System.out.println(Y0[i] + " ");
+			System.out.println(y0[i] + " ");
 		}
 		System.out.println();
 

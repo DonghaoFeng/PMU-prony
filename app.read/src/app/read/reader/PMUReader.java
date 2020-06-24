@@ -13,6 +13,10 @@ import app.read.collection.WAMSData;
 import app.read.process.AddPMUProcessor;
 import jni.ReadTableJNI;
 
+/**
+ * @author Donghao
+ *
+ */
 public class PMUReader {
 
 	private HazelcastInstance client;
@@ -22,7 +26,7 @@ public class PMUReader {
 		this.client = client;
 	}
 
-	public void readPMUN2Cache() {
+	public void readPmuToCache() {
 		ArrayList<Wams_index_tableRecord> indexRecrodList = (ArrayList<Wams_index_tableRecord>) ReadTableJNI
 				.readTableN("realtime", "wams_fes", "psdb", "wams_index_table");
 		ISet<Object> timeSet = client.getSet("wams_index_table");

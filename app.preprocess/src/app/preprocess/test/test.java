@@ -11,11 +11,15 @@ import com.chinomars.prony.PronyParameter;
 
 import app.preprocess.PreFilter;
 
+/**
+ * @author Donghao
+ *
+ */
 public class test {
 	int point = 5 * 50;
 
 	private double frequency = 2;
-	private double T = 0.02;
+	private double t = 0.02;
 	private double phase = 0.1;
 	private double damping = -0.2;
 	private double amlitude = 2;
@@ -24,9 +28,9 @@ public class test {
 
 	@Test
 	public void test() {
-		double[] t = new double[point];
-		for (int k = 0; k < t.length; k++) {
-			t[k] = T * k;
+		double[] time = new double[point];
+		for (int k = 0; k < time.length; k++) {
+			time[k] = t * k;
 		}
 		double[] values = new double[point * 2];
 		for (int k = 0; k < point; k++) {
@@ -39,10 +43,10 @@ public class test {
 			} else {
 				values[k] = -6 + (Math.random() - 0.5) * 0.2 + (k - (point - 20)) * 0.4;
 			}
-			values[k + point] = 2 + Math.cos(2 * Math.PI * 10 * frequency * t[k] + phase) * 0.1
-					+ amlitude * Math.cos(2 * Math.PI * frequency * t[k] + phase) * Math.exp(t[k] * damping)
-					+ 0.2 * amlitude * Math.cos(2 * Math.PI * 1.5 * frequency * t[k] + 2 * phase)
-							* Math.exp(t[k] * 0.7 * damping);
+			values[k + point] = 2 + Math.cos(2 * Math.PI * 10 * frequency * time[k] + phase) * 0.1
+					+ amlitude * Math.cos(2 * Math.PI * frequency * time[k] + phase) * Math.exp(time[k] * damping)
+					+ 0.2 * amlitude * Math.cos(2 * Math.PI * 1.5 * frequency * time[k] + 2 * phase)
+							* Math.exp(time[k] * 0.7 * damping);
 		}
 		if (PreFilter.checkOscillation(values, 4)) {
 //			DrawMath.add(values);
@@ -51,7 +55,7 @@ public class test {
 //			DrawMath.add(values);
 //			DrawMath.draw();
 
-			Prony prony = new Prony(values, T, 40);
+			Prony prony = new Prony(values, t, 40);
 //			prony.fit(8);
 			List<PronyParameter> list = prony.getParameterList();
 			DrawMath.add(prony.getFitvalues());

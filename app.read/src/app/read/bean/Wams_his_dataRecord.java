@@ -1,5 +1,9 @@
 package app.read.bean;
 
+/**
+ * @author Donghao
+ *
+ */
 public class Wams_his_dataRecord extends BaseJSONBean {
 
 	/**

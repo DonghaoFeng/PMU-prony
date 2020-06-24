@@ -1,6 +1,10 @@
 package com.chinomars.prony;
 
-public class PronyParameter {
+/**
+ * @author Donghao
+ *
+ */
+final public class PronyParameter implements Comparable<PronyParameter>{
 	
 	private double amlitude;
 	
@@ -10,9 +14,9 @@ public class PronyParameter {
 
 	private double frequency;
 	
-	private int length;
+	private final int length;
 	
-	private double t;
+	private final double t;
 	
 	private double energy ;
 
@@ -75,5 +79,11 @@ public class PronyParameter {
 		return "[Amlitude]:" + String.format("%-24s", this.amlitude) + "[Frequency]:"
 				+ String.format("%-24s", this.frequency) + "[Damping]:" + String.format("%-24s", this.damping) + "[Phase]"
 				+ String.format("%-24s", this.phase) + "============= [energy]:" + this.getEnergy();
+	}
+
+
+	@Override
+	public int compareTo(PronyParameter p) {
+		return -Double.valueOf(this.getEnergy()).compareTo(p.getEnergy());
 	}
 }

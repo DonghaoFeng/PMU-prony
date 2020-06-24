@@ -1,6 +1,7 @@
 package com.chinomars.prony;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -12,25 +13,29 @@ import org.apache.commons.math3.complex.Complex;
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
-public class Prony {
+/**
+ * @author Donghao
+ *
+ */
+final public class Prony {
 
-	private double T;
+	private final double T;
 	private int rank = 1;
-	private double[] values;
-	private double minSNR;
-	private double fitSNR;
+	private final double[] values;
+	private final double minSnr;
+	private double fitSnr;
 	private double[] fitvalues;
 	private ArrayList<PronyParameter> parameterList;
-	private HashMap<Integer, Double> mapSNR = new HashMap<Integer, Double>();
+	private final HashMap<Integer, Double> mapSnr = new HashMap<Integer, Double>();
 
-	public Prony(double[] values, double t, double minSNR) {
+	public Prony(double[] values, double t, double minSnr) {
 		this.values = values;
 		this.T = t;
-		this.minSNR = minSNR;
+		this.minSnr = minSnr;
 	}
 
-	public double getFitSNR() {
-		return fitSNR;
+	public double getFitSnr() {
+		return fitSnr;
 	}
 
 	public int getEstimateNumber() {
@@ -117,7 +122,7 @@ public class Prony {
 		// u matrix
 		int i, j;
 		int length = u.getRealEigenvalues().length;
-		int values_length = values.length;
+		int valuesLength = values.length;
 		double[] realEigenvalues = u.getRealEigenvalues();
 		double[] imagEigenvalues = u.getImagEigenvalues();
 		Complex complex;
@@ -125,13 +130,13 @@ public class Prony {
 		for (j = 0; j < length; j++) {	
 			complex = new Complex(realEigenvalues[j], imagEigenvalues[j]);
 			pow = new Complex(1, 0).divide(complex);
-			for (i = 0; i < values_length; i++) {
+			for (i = 0; i < valuesLength; i++) {
 				pow = pow.multiply(complex);
 				eqn.setA(pow.getReal(), pow.getImaginary(),i, j);
 			}
 		}
 		// y matrix
-		for (i = 0; i < values_length; i++) {
+		for (i = 0; i < valuesLength; i++) {
 			eqn.setBi(values[i], 0, i);
 		}
 		// C matrix
@@ -213,9 +218,6 @@ public class Prony {
 		return paramerterList;
 	}*/
 
-	private void setT(double T) {
-		this.T = T;
-	}
 
 	private double[] getFitValues(int length) {
 		double[] values = new double[length];
@@ -229,14 +231,14 @@ public class Prony {
 	
 	
 
-	private void calSNR() {
+	private void calSnr() {
 		double[] diff = new double[values.length];
 		for (int i = 0; i < diff.length; i++) {
 			diff[i] = values[i] - fitvalues[i];
 		}
 
-		fitSNR = 20 * Math.log10(rms(values) / rms(diff));
-		mapSNR.put(rank, fitSNR);
+		fitSnr = 20 * Math.log10(rms(values) / rms(diff));
+		mapSnr.put(rank, fitSnr);
 	}
 
 	private double rms(double[] value) {
@@ -250,12 +252,12 @@ public class Prony {
 
 	public void fit() {
 		fit(rank);
-		while (fitSNR < minSNR && rank <= 50) {
+		while (fitSnr < minSnr && rank <= 50) {
 			rank++;
 			fit(rank);
 		}
 		if (rank > 20) {
-			Entry<Integer, Double> entry = mapSNR.entrySet().stream().max(new Comparator<Entry<Integer, Double>>() {
+			Entry<Integer, Double> entry = mapSnr.entrySet().stream().max(new Comparator<Entry<Integer, Double>>() {
 				@Override
 				public int compare(Entry<Integer, Double> o1, Entry<Integer, Double> o2) {
 					return o1.getValue().compareTo(o2.getValue());
@@ -276,26 +278,20 @@ public class Prony {
 	 * @return parameters list
 	 */
 	public void fit(int rank) {
-		this.setT(T);
 		Matrix aMatrix = calAMatrix(values, rank * 2);
 		double[] aArray = aMatrix.getColumnPackedCopy();
-		double[] a_Array = new double[aArray.length + 1];
-		a_Array[0] = 1;
+		double[] aArrayNew = new double[aArray.length + 1];
+		aArrayNew[0] = 1;
 		for (int i = 0; i < aArray.length; i++) {
-			a_Array[i + 1] = -aArray[i];
+			aArrayNew[i + 1] = -aArray[i];
 		}
-		EigenvalueDecomposition u = roots(a_Array);
+		EigenvalueDecomposition u = roots(aArrayNew);
 		parameterList = getParamerterList(u, values);
-		parameterList.sort(new Comparator<PronyParameter>() {
-			@Override
-			public int compare(PronyParameter o1, PronyParameter o2) {
-				return -new Double(o1.getEnergy()).compareTo(o2.getEnergy());
-			}
-		});
+		Collections.sort(parameterList);
 
 		fitvalues = getFitValues(values.length);
 		this.rank = rank;
-		this.calSNR();
-		System.err.println("Rank:" + rank + ",SNR :" + fitSNR);
+		this.calSnr();
+		System.err.println("Rank:" + rank + ",Snr :" + fitSnr);
 	}
 }

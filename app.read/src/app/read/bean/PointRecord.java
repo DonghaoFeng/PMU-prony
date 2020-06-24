@@ -1,5 +1,9 @@
 package app.read.bean;
 
+/**
+ * @author Donghao
+ *
+ */
 public class PointRecord extends BaseJSONBean {
 	
 	private double value;

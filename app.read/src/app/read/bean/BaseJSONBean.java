@@ -5,6 +5,10 @@ import java.io.Serializable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * @author Donghao
+ *
+ */
 public abstract class BaseJSONBean  implements Serializable{
 
 	@Override

@@ -2,6 +2,11 @@ package app.read.collection;
 
 import java.util.LinkedList;
 
+/**
+ * @author Donghao
+ *
+ * @param <T>
+ */
 public class FixSizeLinkedList<T> extends LinkedList<T> {	
 	private int capacity;
  

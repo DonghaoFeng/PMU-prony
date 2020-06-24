@@ -3,6 +3,10 @@ package app.read.collection;
 import app.read.bean.BaseJSONBean;
 import app.read.bean.Wams_his_dataRecord;
 
+/**
+ * @author Donghao
+ *
+ */
 public class WAMSData extends BaseJSONBean{
 	private String time;
 	private Wams_his_dataRecord record;

@@ -10,6 +10,10 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
  
+/**
+ * @author Donghao
+ *
+ */
 public class DrawMath {
 	static XYSeriesCollection dataset = new XYSeriesCollection();
 	public static void add(double[]values) {

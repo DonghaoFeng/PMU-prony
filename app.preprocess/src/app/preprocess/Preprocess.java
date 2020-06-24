@@ -3,6 +3,10 @@ package app.preprocess;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * @author Donghao
+ *
+ */
 public class Preprocess {
 
 	
@@ -169,37 +173,38 @@ public class Preprocess {
 
 	int windowsLength = new Double(50 / frequencyHig / 2).intValue();
 	private void findPoint() {
-		int left_number;
-		int right_number;
+		int leftNumber;
+		int rightNumber;
 		boolean isMaxValue;
 		boolean isMinValue;
 		upperPointIndexList = new ArrayList<Integer>();
 		lowerPointIndexList = new ArrayList<Integer>();
 		pointIndexList = new ArrayList<Integer>();
+		int allLength = windowsLength * 2;
 		int j;
-		for (int i = 0; i + windowsLength * 2 < yArray.length; i++) {
+		for (int i = 0; i + allLength < yArray.length; i++) {
 			isMaxValue = true;
-			for ( j = 0; j < windowsLength * 2; j++) {
+			for ( j = 0; j < allLength; j++) {
 				if (yArray[i + j] > yArray[i + windowsLength]) {
 					isMaxValue = false;
 				}
 			}
 			if (isMaxValue) {
-				left_number = 0;
+				leftNumber = 0;
 				for (j = 0; j < windowsLength; j++) {
 					if (yArray[i + j] < yArray[i + j + 1]) {
-						left_number++;
+						leftNumber++;
 					}
 				}
 
-				right_number = 0;
-				for (j = windowsLength; j < 2 * windowsLength; j++) {
+				rightNumber = 0;
+				for (j = windowsLength; j < allLength; j++) {
 					if (yArray[i + j] > yArray[i + j + 1]) {
-						right_number++;
+						rightNumber++;
 					}
 				}
 
-				if ((double) left_number / windowsLength > 0.8 && (double) right_number / windowsLength > 0.8) {
+				if ((double) leftNumber / windowsLength > 0.8 && (double) rightNumber / windowsLength > 0.8) {
 
 					upperPointIndexList.add(i+ windowsLength);
 					pointIndexList.add(i+ windowsLength);
@@ -207,27 +212,27 @@ public class Preprocess {
 			}
 
 			isMinValue = true;
-			for (j = 0; j < windowsLength * 2; j++) {
+			for (j = 0; j < allLength; j++) {
 				if (yArray[i + j] < yArray[i + windowsLength]) {
 					isMinValue = false;
 				}
 			}
 			if (isMinValue) {
-				left_number = 0;
+				leftNumber = 0;
 				for (j = 0; j < windowsLength; j++) {
 					if (yArray[i + j] > yArray[i + j + 1]) {
-						left_number++;
+						leftNumber++;
 					}
 				}
 
-				right_number = 0;
-				for (j = windowsLength; j < 2 * windowsLength; j++) {
+				rightNumber = 0;
+				for (j = windowsLength; j < allLength; j++) {
 					if (yArray[i + j] < yArray[i + j + 1]) {
-						right_number++;
+						rightNumber++;
 					}
 				}
 
-				if ((double) left_number / windowsLength > 0.8 && (double) right_number / windowsLength > 0.8) {
+				if ((double) leftNumber / windowsLength > 0.8 && (double) rightNumber / windowsLength > 0.8) {
 					lowerPointIndexList.add(i+ windowsLength);
 					pointIndexList.add(i+ windowsLength);
 				}
